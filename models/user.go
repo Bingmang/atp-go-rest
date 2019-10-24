@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/lib/pq"
 	"time"
 )
 
@@ -25,14 +26,14 @@ type Student struct {
 }
 
 func (c *Coach) Insert() (insertID int64, err error) {
-	stmt, err := Conn.Prepare("INSERT INTO coach(account, password, majors, classes, created_time) " +
+	stmt, err := Conn.Prepare("INSERT INTO coach(account, password, majors, classes, created_time, yn) " +
 		"VALUES ($1, $2, $3, $4, $5, $6) RETURNING id")
-	defer stmt.Close()
 	if err != nil {
 		return -1, err
 	}
+	c.Yn = true
 	c.CreatedTime = time.Now().UTC()
-	res, err := stmt.Exec(c.Account, c.Password, c.Majors, c.Classes, c.CreatedTime)
+	res, err := stmt.Exec(c.Account, c.Password, pq.Array(c.Majors), pq.Array(c.Classes), c.CreatedTime, c.Yn)
 	if err != nil {
 		return -1, err
 	}

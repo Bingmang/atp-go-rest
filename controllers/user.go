@@ -4,6 +4,7 @@ import (
 	"atp-go-rest/models"
 	"atp-go-rest/utils"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -17,6 +18,7 @@ func AddCoach(w http.ResponseWriter, r *http.Request) {
 			Message: "wrong format",
 			Data: err,
 		})
+		return
 	}
 	insertID, err := coach.Insert()
 	if err != nil {
@@ -25,10 +27,13 @@ func AddCoach(w http.ResponseWriter, r *http.Request) {
 			Message: "insert failed",
 			Data: err,
 		})
+		log.Println(err)
+		return
 	}
 	utils.ResponseWithJson(w, http.StatusOK, utils.Response{
 		StatusCode: http.StatusOK,
 		Message:    "Success!",
 		Data:       insertID,
 	})
+	return
 }

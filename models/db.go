@@ -17,4 +17,8 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if err = Conn.Ping(); err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Connecting database")
 }
